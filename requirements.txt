@@ -3,3 +3,6 @@ spaces
 torch
 transformers
 accelerate
+faiss-cpu
+sentence-transformers
+pypdf
