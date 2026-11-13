@@ -3,8 +3,8 @@ title: Testes
 emoji: 🐢
 colorFrom: purple
 colorTo: red
-sdk: gradio
-sdk_version: 6.32.0
+sdk: streamlit
+sdk_version: 1.45.0
 python_version: '3.12'
 app_file: app.py
 pinned: false
