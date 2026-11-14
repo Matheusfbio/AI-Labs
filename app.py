@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import json
+import spaces
 import torch
 import gradio as gr
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -23,6 +24,7 @@ SYSTEM_PROMPT = """Você é um extrator de entidades. Dado um texto, extraia as 
 Não adicione explicações, apenas o JSON."""
 
 
+@spaces.GPU
 def extract_entities(text: str) -> tuple[str, str]:
     messages = [
         {"role": "system", "content": SYSTEM_PROMPT},
