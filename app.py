@@ -15,7 +15,7 @@ SYSTEM_PROMPT = "Você é um assistente especializado em tecnologia."
 CHUNK_SIZE = 500
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype="auto", device_map="auto")
+model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.float16)
 model.eval()
 embedder = SentenceTransformer(EMBED_MODEL_ID)
 
@@ -61,6 +61,7 @@ def retrieve(query: str, k: int = 3) -> str:
 
 @spaces.GPU
 def generate_reply(prompt: str, history: list, max_new_tokens: int, temperature: float, top_p: float) -> str:
+    model.to("cuda")
     context = retrieve(prompt)
     system = SYSTEM_PROMPT
     if context:
@@ -75,8 +76,7 @@ def generate_reply(prompt: str, history: list, max_new_tokens: int, temperature:
     inputs = tokenizer.apply_chat_template(
         messages, tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True
     )
-    input_device = model.get_input_embeddings().weight.device
-    inputs = {k: v.to(input_device) for k, v in inputs.items()}
+    inputs = {k: v.to("cuda") for k, v in inputs.items()}
 
     generation_args = {
         **inputs,
